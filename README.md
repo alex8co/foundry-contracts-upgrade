@@ -22,7 +22,7 @@ cast balance $OWNER_ADDRESS --ether --rpc-url $RPC_URL
 
 
 ```bash
-export PROXY_ADDRESS=0x2F308f776Bf654e3E068801925a8dc3C9830390A
+export PROXY_ADDRESS=0x63658b61F3134F2f39b236495aeFE21D48f886De
 ```
 ```bash
 cast call $PROXY_ADDRESS "number()" --rpc-url $RPC_URL
