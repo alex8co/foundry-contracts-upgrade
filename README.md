@@ -1,66 +1,60 @@
-## Foundry
-
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+# deploy V1
+## Start testnet
+```bash
+anvil --fork-url https://reth-ethereum.ithaca.xyz/rpc
 ```
 
-### Test
-
-```shell
-$ forge test
+## Set your environment variables first
+```bash
+export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+export INITIAL_VALUE=100
+export OWNER_ADDRESS=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+export RPC_URL=http://127.0.0.1:8545
+cast balance $OWNER_ADDRESS --ether --rpc-url $RPC_URL
 ```
 
-### Format
 
-```shell
-$ forge fmt
+## Run the deploy script
+```bash
+forge script script/Deploy.s.sol:Deploy --sig "run()" --rpc-url $RPC_URL --private-key $PRIVATE_KEY  --broadcast
+cast balance $OWNER_ADDRESS --ether --rpc-url $RPC_URL
 ```
 
-### Gas Snapshots
 
-```shell
-$ forge snapshot
+```bash
+export PROXY_ADDRESS=0x2F308f776Bf654e3E068801925a8dc3C9830390A
+```
+```bash
+cast call $PROXY_ADDRESS "number()" --rpc-url $RPC_URL
+cast send $PROXY_ADDRESS "increment()"  --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+cast call $PROXY_ADDRESS "number()" --rpc-url $RPC_URL
 ```
 
-### Anvil
-
-```shell
-$ anvil
+```bash
+cast call $PROXY_ADDRESS "owner()(address)" --rpc-url $RPC_URL
 ```
 
-### Deploy
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+# upgrade to V2
+## Set your environment variables
+
+## Run the upgrade script
+```bash
+forge script script/Upgrade.s.sol --sig "run(address)" $PROXY_ADDRESS  --rpc-url $RPC_URL --private-key $PRIVATE_KEY  --broadcast
 ```
 
-### Cast
-
-```shell
-$ cast <subcommand>
+```bash
+cast call $PROXY_ADDRESS "number()" --rpc-url $RPC_URL
+cast send $PROXY_ADDRESS "increment()"  --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+cast send $PROXY_ADDRESS "decrement()"  --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+cast call $PROXY_ADDRESS "number()" --rpc-url $RPC_URL
 ```
 
-### Help
+# other
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+```bash
+cast balance $OWNER_ADDRESS --ether --rpc-url $RPC_URL
+cast call $PROXY_ADDRESS "owner()(address)" --rpc-url $RPC_URL
+cast wallet address $PRIVATE_KEY
+cast balance $PROXY_ADDRESS --ether --rpc-url $RPC_URL
 ```
